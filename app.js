@@ -157,6 +157,7 @@ function stopWakeLock(releaseExplicit = true) {
   durBtns.forEach(b => b.classList.remove('selected'));
   customDurBtn.textContent = 'Custom';
   customInputRow.hidden = true;
+  customMinutes.value = '';
 }
 
 // Re-acquire when tab becomes visible again
@@ -176,6 +177,10 @@ durBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn === customDurBtn) {
       customInputRow.hidden = !customInputRow.hidden;
+      if (!customInputRow.hidden) {
+        customMinutes.focus();
+        customMinutes.select();
+      }
       return;
     }
 
@@ -204,7 +209,8 @@ function applyCustomDuration() {
   customDurBtn.classList.add('selected');
   customDurBtn.textContent = `${val} min`;
 
-  if (isActive) { stopWakeLock(); startWakeLock(); }
+  if (isActive) { stopWakeLock(); }
+  startWakeLock();
 }
 
 // -- Toast ---------------------------------------------------------------------
