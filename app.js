@@ -152,6 +152,11 @@ function stopWakeLock(releaseExplicit = true) {
   ringStatus.textContent   = 'tap to start';
   setTimerDisplay(0);
   ringProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
+
+  durationSec = 0;
+  durBtns.forEach(b => b.classList.remove('selected'));
+  customDurBtn.textContent = 'Custom';
+  customInputRow.hidden = true;
 }
 
 // Re-acquire when tab becomes visible again
