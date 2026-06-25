@@ -1,0 +1,513 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ===== Tokens ===== */
+:root {
+  --bg:        #111;
+  --surface:   #1a1a1a;
+  --border:    #2a2a2a;
+  --text:      #e5e5e5;
+  --muted:     #555;
+  --accent:    #e5e5e5;
+  --ring-track: #222;
+  --ring-size: clamp(190px, min(44vw, 40vh), 270px);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius: 10px;
+}
+
+/* ===== Base ===== */
+html { height: 100%; }
+
+body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  display: flex;
+  justify-content: center;
+  padding-bottom: 4rem;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%; /* prevent iOS font inflation */
+}
+
+/* Touch: remove tap highlight, prevent double-tap zoom delay */
+button, input, summary {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* ===== App ===== */
+.app {
+  width: 100%;
+  max-width: 480px;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Header ===== */
+.header {
+  width: 100%;
+  padding: 2rem 0 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--text);
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* Steam vapour animation */
+@keyframes steam-rise {
+  0%   { transform: translateY(0)    scaleX(1);    opacity: 0.9; }
+  50%  { transform: translateY(-3px) scaleX(0.85); opacity: 0.55; }
+  100% { transform: translateY(-6px) scaleX(1.1);  opacity: 0; }
+}
+
+.logo-icon .steam {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.logo-icon .steam-1 { animation: steam-rise 2s ease-in-out infinite; }
+.logo-icon .steam-2 { animation: steam-rise 2s ease-in-out 0.65s infinite; }
+.logo-icon .steam-3 { animation: steam-rise 2s ease-in-out 1.3s infinite; }
+
+/* ===== Main ===== */
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem 0 0;
+  width: 100%;
+}
+
+/* ===== Ring ===== */
+.ring-wrapper {
+  position: relative;
+  width: var(--ring-size);
+  height: var(--ring-size);
+  display: grid;
+  place-items: center;
+}
+
+/* Concentric hint rings that pulse when active */
+.ring-wrapper::before,
+.ring-wrapper::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(229, 229, 229, 0.045);
+  pointer-events: none;
+  transition: border-color 0.6s;
+}
+.ring-wrapper::before {
+  width: calc(var(--ring-size) + 32px);
+  height: calc(var(--ring-size) + 32px);
+}
+.ring-wrapper::after {
+  width: calc(var(--ring-size) - 28px);
+  height: calc(var(--ring-size) - 28px);
+}
+.ring-wrapper.active::before {
+  border-color: rgba(229, 229, 229, 0.1);
+  animation: concentric-pulse 3.5s ease-in-out infinite;
+}
+.ring-wrapper.active::after {
+  border-color: rgba(229, 229, 229, 0.08);
+  animation: concentric-pulse 3.5s ease-in-out 1.75s infinite;
+}
+
+@keyframes concentric-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.025); }
+}
+
+.ring-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: var(--ring-size);
+  height: var(--ring-size);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  outline: none;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ring-btn:hover  { transform: scale(1.04); }
+.ring-btn:active { transform: scale(0.94); }
+
+.ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ring-track {
+  fill: none;
+  stroke: var(--ring-track);
+  stroke-width: 3;
+  animation: track-breathe 4s ease-in-out infinite;
+}
+
+@keyframes track-breathe {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 1; }
+}
+
+.ring-progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+  transform: rotate(-90deg);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+/* SVG spring-pop + glow breathe on activation */
+@keyframes svg-pop {
+  0%   { transform: scale(1); }
+  38%  { transform: scale(1.09); }
+  68%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { filter: drop-shadow(0 0  0px rgba(229, 229, 229, 0)); }
+  50%       { filter: drop-shadow(0 0 26px rgba(229, 229, 229, 0.14)); }
+}
+
+.ring-wrapper.active .ring-svg {
+  animation:
+    svg-pop     0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    glow-breathe 3.5s 0.55s ease-in-out infinite;
+}
+
+/* Comet arc for indefinite mode */
+@keyframes comet-orbit {
+  from { transform: rotate(-90deg); }
+  to   { transform: rotate(270deg); }
+}
+
+.ring-btn.active.infinite .ring-progress {
+  stroke-dasharray: 80 423;
+  stroke-dashoffset: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: comet-orbit 2s linear infinite;
+  transition: none;
+}
+
+/* Inner */
+.ring-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+/* Subtle breathing on inner content when active */
+@keyframes inner-breathe {
+  0%, 100% { opacity: 0.88; }
+  50%       { opacity: 1; }
+}
+
+.ring-wrapper.active .ring-inner {
+  animation: inner-breathe 3.5s ease-in-out 0.3s infinite;
+}
+
+.ring-timer {
+  font-size: clamp(2rem, 9vw, 2.8rem);
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.4s;
+}
+
+.ring-btn.active .ring-timer { color: #fff; }
+
+/* Each-second digit micro-animation toggled by JS */
+@keyframes digit-tick {
+  0%   { opacity: 0.4; transform: translateY(-4px) scale(0.96); }
+  100% { opacity: 1;   transform: translateY(0)    scale(1); }
+}
+
+.ring-timer.tick {
+  animation: digit-tick 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ring-status {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--muted);
+  transition: color 0.4s;
+}
+
+/* Status text slides up on activation */
+@keyframes status-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ring-btn.active .ring-status {
+  color: var(--text);
+  animation: status-enter 0.45s ease-out 0.2s both;
+}
+
+/* ===== Duration buttons ===== */
+.duration-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dur-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--font);
+  padding: 0.45rem 1rem;
+  min-height: 44px;           /* WCAG touch target */
+  display: inline-flex;
+  align-items: center;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.dur-btn:hover {
+  border-color: #444;
+  color: var(--text);
+}
+
+.dur-btn.selected {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* ===== Custom input ===== */
+.custom-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.custom-input-row input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  width: 120px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.custom-input-row input::placeholder { color: var(--muted); }
+.custom-input-row input:focus { border-color: #444; }
+.custom-input-row input::-webkit-outer-spin-button,
+.custom-input-row input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.set-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.8rem;
+  padding: 0.45rem 1rem;
+  min-height: 44px;           /* WCAG touch target */
+  transition: border-color 0.15s;
+}
+.set-btn:hover { border-color: #444; }
+
+/* ===== FAQ ===== */
+.faq {
+  width: 100%;
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-top: 1px solid var(--border);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  user-select: none;
+  transition: color 0.15s;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: '+';
+  font-size: 1rem;
+  color: var(--border);
+  transition: transform 0.2s, color 0.15s;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.faq-item[open] summary { color: var(--text); }
+.faq-item[open] summary::after { transform: rotate(45deg); color: var(--muted); }
+
+.faq-item p {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.65;
+  padding-bottom: 1rem;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 3rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+.footer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer a:hover { opacity: 0.8; }
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  padding: 0.5rem 1.2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== Responsive ===== */
+
+/* ── Tiny phones: < 360px ── */
+@media (max-width: 359px) {
+  :root { --ring-size: clamp(160px, 70vw, 190px); }
+
+  .app     { padding: 0 1rem; }
+  .header  { padding: 1.2rem 0 0; }
+  .main    { gap: 1.4rem; padding-top: 1.8rem; }
+
+  .ring-timer { font-size: clamp(1.5rem, 10vw, 2rem); }
+  .dur-btn    { font-size: 0.72rem; padding: 0.4rem 0.7rem; }
+}
+
+/* ── Landscape phones: short viewport ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root { --ring-size: clamp(120px, 32vh, 170px); }
+
+  body        { padding-bottom: 1.5rem; }
+  .header     { padding: 0.75rem 0 0; }
+  .main       { flex-direction: row; flex-wrap: wrap; justify-content: center;
+                align-items: center; gap: 1.2rem; padding-top: 0.75rem; }
+  .ring-wrapper { flex-shrink: 0; }
+  .duration-row { justify-content: center; }
+  .faq        { margin-top: 1.5rem; }
+  .footer     { margin-top: 1.5rem; }
+  .ring-timer { font-size: clamp(1.3rem, 5vh, 2rem); letter-spacing: 1px; }
+}
+
+/* ── Phablets / small tablets: ≥ 600px ── */
+@media (min-width: 600px) {
+  :root { --ring-size: clamp(240px, 36vw, 300px); }
+
+  .app { max-width: 540px; padding: 0 2rem; }
+}
+
+/* ── Tablets: ≥ 768px ── */
+@media (min-width: 768px) {
+  :root { --ring-size: 300px; }
+
+  .app    { max-width: 580px; padding: 0 2.5rem; }
+  .header { padding: 2.5rem 0 0; }
+  .main   { gap: 2.5rem; padding-top: 3.5rem; }
+
+  .dur-btn        { font-size: 0.85rem; padding: 0.5rem 1.25rem; }
+  .faq            { margin-top: 3.5rem; }
+  .footer         { margin-top: 3.5rem; }
+  .faq-item summary { font-size: 0.92rem; }
+  .faq-item p     { font-size: 0.86rem; }
+}
+
+/* ── Desktop: ≥ 1024px ── */
+@media (min-width: 1024px) {
+  :root { --ring-size: 320px; }
+
+  .app    { max-width: 600px; }
+  .main   { gap: 2.8rem; padding-top: 4rem; }
+  .faq    { margin-top: 4rem; }
+  .footer { margin-top: 4rem; }
+
+  /* Hover states only make sense with a pointer */
+  .ring-btn:hover  { transform: scale(1.04); }
+  .ring-btn:active { transform: scale(0.94); }
+}
+
+/* ── Desktops without fine pointer (touch screens ≥ 1024px) ── */
+@media (min-width: 1024px) and (pointer: coarse) {
+  .ring-btn:hover  { transform: none; }
+}
+
+/* ── Large / 4K: ≥ 1440px ── */
+@media (min-width: 1440px) {
+  :root  { --ring-size: 340px; }
+  .app   { max-width: 640px; }
+  body   { font-size: 17px; } /* scale base font up slightly */
+}
