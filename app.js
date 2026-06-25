@@ -12,6 +12,11 @@ const customInputRow = document.getElementById('customInputRow');
 const customMinutes  = document.getElementById('customMinutes');
 const setCustomBtn   = document.getElementById('setCustomBtn');
 
+const odoHoursEl   = document.getElementById('odoHours');
+const odoMinutesEl = document.getElementById('odoMinutes');
+const odoSecondsEl = document.getElementById('odoSeconds');
+const hoursWrap    = document.getElementById('hoursWrap');
+
 // -- Constants -----------------------------------------------------------------
 const RING_CIRCUMFERENCE = 2 * Math.PI * 80; // r=80
 
@@ -21,6 +26,25 @@ let isActive    = false;
 let durationSec = 0;   // 0 = indefinite
 let elapsedSec  = 0;
 let tickInterval = null;
+
+// -- Odometer instances -------------------------------------------------------
+let odoHours, odoMinutes, odoSeconds;
+;(function () {
+  const opts = { format: 'dd', duration: 500, animation: 'slide' };
+  odoHours   = new Odometer({ el: odoHoursEl,   value: 0, ...opts });
+  odoMinutes = new Odometer({ el: odoMinutesEl, value: 0, ...opts });
+  odoSeconds = new Odometer({ el: odoSecondsEl, value: 0, ...opts });
+}());
+
+function setTimerDisplay(totalSec) {
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  hoursWrap.hidden = h === 0;
+  if (h > 0) odoHours.update(h);
+  odoMinutes.update(m);
+  odoSeconds.update(s);
+}
 
 // -- Timer format --------------------------------------------------------------
 function formatTime(totalSec) {
@@ -49,24 +73,19 @@ function tick() {
   elapsedSec++;
 
   if (durationSec === 0) {
-    timerDisplay.textContent = formatTime(elapsedSec);
+    setTimerDisplay(elapsedSec);
   } else {
     const remaining = durationSec - elapsedSec;
     if (remaining <= 0) {
-      timerDisplay.textContent = formatTime(0);
+      setTimerDisplay(0);
       updateRingProgress();
       stopWakeLock();
       showToast('Done');
       return;
     }
-    timerDisplay.textContent = formatTime(remaining);
+    setTimerDisplay(remaining);
     updateRingProgress();
   }
-
-  // Digit micro-animation — restart by removing then re-adding the class
-  timerDisplay.classList.remove('tick');
-  void timerDisplay.offsetWidth; // force reflow
-  timerDisplay.classList.add('tick');
 }
 
 // -- Wake Lock -----------------------------------------------------------------
@@ -105,10 +124,10 @@ async function startWakeLock() {
   if (durationSec === 0) {
     ringBtn.classList.add('infinite');
     ringProgress.style.strokeDashoffset = '0'; // allow comet CSS to render arc
-    timerDisplay.textContent = formatTime(0);
+    setTimerDisplay(0);
   } else {
     ringBtn.classList.remove('infinite');
-    timerDisplay.textContent = formatTime(durationSec);
+    setTimerDisplay(durationSec);
     updateRingProgress();
   }
 
@@ -131,7 +150,7 @@ function stopWakeLock(releaseExplicit = true) {
   ringWrapper.classList.remove('active');
   ringBtn.setAttribute('aria-pressed', 'false');
   ringStatus.textContent   = 'tap to start';
-  timerDisplay.textContent = '00:00';
+  setTimerDisplay(0);
   ringProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
 }
 

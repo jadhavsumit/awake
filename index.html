@@ -6,6 +6,7 @@
   <title>Awake</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-minimal.min.css" />
 </head>
 <body>
 
@@ -39,7 +40,12 @@
               stroke-dashoffset="502.65"/>
           </svg>
           <div class="ring-inner">
-            <div class="ring-timer" id="timerDisplay">00:00</div>
+            <div class="ring-timer" id="timerDisplay">
+              <span class="timer-hours-wrap" id="hoursWrap" hidden>
+                <span class="timer-odo" id="odoHours">00</span><span class="timer-sep">:</span>
+              </span>
+              <span class="timer-odo" id="odoMinutes">00</span><span class="timer-sep">:</span><span class="timer-odo" id="odoSeconds">00</span>
+            </div>
             <div class="ring-status" id="ringStatus">tap to start</div>
           </div>
         </button>
@@ -74,6 +80,7 @@
     </footer>
 
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

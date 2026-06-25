@@ -243,22 +243,37 @@ button, input, summary {
 .ring-timer {
   font-size: clamp(2rem, 9vw, 2.8rem);
   font-weight: 300;
-  letter-spacing: 2px;
   color: var(--text);
   font-variant-numeric: tabular-nums;
   transition: color 0.4s;
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .ring-btn.active .ring-timer { color: #fff; }
 
-/* Each-second digit micro-animation toggled by JS */
-@keyframes digit-tick {
-  0%   { opacity: 0.4; transform: translateY(-4px) scale(0.96); }
-  100% { opacity: 1;   transform: translateY(0)    scale(1); }
+.timer-sep { letter-spacing: 0; }
+
+.timer-hours-wrap { display: flex; align-items: center; }
+.timer-hours-wrap[hidden] { display: none; }
+
+/* Odometer — adopt timer font & theme */
+.ring-timer .timer-odo.odometer {
+  font-family: var(--font) !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  line-height: 1 !important;
 }
 
-.ring-timer.tick {
-  animation: digit-tick 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.ring-timer .timer-odo .odometer-digit {
+  padding: 0 !important;
+}
+
+.ring-timer .timer-odo.odometer.odometer-animating-up .odometer-ribbon-inner,
+.ring-timer .timer-odo.odometer.odometer-animating-down .odometer-ribbon-inner {
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .ring-status {
